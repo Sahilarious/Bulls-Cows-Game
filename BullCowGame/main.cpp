@@ -6,8 +6,7 @@
 
 // std --> standard namespace
 
-constexpr int WORD_LENGTH = 5;
-constexpr int MAX_GUESSES = 5;
+constexpr int WORD_LENGTH = 7;
 
 void PrintIntro();
 void PlayGame();
@@ -15,12 +14,15 @@ std::string GetGuess();
 bool CheckIsValidGuess(std::string Guess);
 bool AskToPlayAgain();
 
+FBullCowGame BCGame = FBullCowGame(WORD_LENGTH);
+
 
 int main() 
 {
 	bool bPlayAgain = false;
 	do 
 	{
+		BCGame.Reset(WORD_LENGTH);
 		PrintIntro();
 		PlayGame();
 		bPlayAgain = AskToPlayAgain();
@@ -33,25 +35,28 @@ int main()
 // Introduce the game
 void PrintIntro() 
 {
-	
-
 	// cout --> character out
 	// << --> overloaded operator
 	std::cout << "Welcome to Bulls and Cows, a super cool word game." << std::endl;
-	std::cout << "Can you guess the " << WORD_LENGTH << " letter isogram I'm thinking of?" << std::endl;
+	std::cout << "Can you guess the " << BCGame.GetWordLength() << " letter isogram I'm thinking of?" << std::endl;
 	return;
 }
 
 // Repeat input/output of guesses for the number of turns
 void PlayGame() 
 {
-	FBullCowGame BCGame = FBullCowGame();
-	for (int i = 1; i <= MAX_GUESSES; i++) {
+	int MaxGuesses = BCGame.GetMaxTries();
+	std::cout << MaxGuesses << std::endl;
+
+	for (int i = 1; i <= MaxGuesses; i++) {
 		bool bIsValid;
 
 		do {
 			std::string PlayerGuess = GetGuess();
-			bIsValid = CheckIsValidGuess(PlayerGuess);
+			bIsValid = BCGame.IsGuessValid(PlayerGuess);
+
+			//if guess is valid, print number of bulls and cows 
+
 		} while (!bIsValid);
 	}
 
@@ -61,7 +66,8 @@ void PlayGame()
 // Take a guess from the player
 std::string GetGuess()
 {
-	std::cout << "Enter your guess: ";
+	int CurrentGuess = BCGame.GetCurrentTries();
+	std::cout << "Enter guess " << CurrentGuess << ": ";
 	std::string Guess = "";
 	
 	getline(std::cin, Guess);
@@ -72,7 +78,8 @@ std::string GetGuess()
 // Repeat the guess back to the user
 bool CheckIsValidGuess(std::string Guess)
 {
-	if (Guess.length() != WORD_LENGTH) {
+	bool IsGuessValid = BCGame.IsGuessValid(Guess);
+	if (!IsGuessValid) {
 		std::cout << "Your guess, " << Guess <<  ", is not valid, try again." << std::endl;
 		return false;
 	}

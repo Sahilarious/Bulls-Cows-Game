@@ -5,18 +5,21 @@
 class FBullCowGame {
 
 public:
-	void Reset(int WordLength); 
-	int GetMaxTries();
-	int GetCurrenTry();
-	bool IsGuessValid(std::string);
-	bool IsGameWon();
-	int GetWordLength();
+	FBullCowGame(int WordLength);
+
+	int GetMaxTries() const;
+	int GetCurrentTries() const;
+	bool IsGameWon() const;
+	int GetWordLength() const;
+
+	void Reset(int WordLength);
+	bool IsGuessValid(std::string Guess);
 
 private:
-	int MyCurrentTry;
 	int MyMaxTries;
-	int WordLength;
-	bool bIsIsogram();
+	int MyCurrentTries = 1;
+	int MyWordLength;
+	bool bIsIsogram() const;
 
 
 

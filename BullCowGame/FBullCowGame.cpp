@@ -1,40 +1,57 @@
 #include "FBullCowGame.h"
 
+FBullCowGame::FBullCowGame(int WordLength)
+{
+	Reset(WordLength);
+}
+
 void FBullCowGame::Reset(int WordLength)
 {
+	constexpr int MAX_GUESSES = 8;
+
+
+	MyMaxTries = MAX_GUESSES;
+	MyWordLength = WordLength;
+
+
+	MyCurrentTries = 1;
 
 	return;
-
 }
 
-int FBullCowGame::GetMaxTries()
+int FBullCowGame::GetMaxTries() const
 {
-	return 0;
+	return MyMaxTries;
 }
 
-int FBullCowGame::GetCurrenTry()
+int FBullCowGame::GetCurrentTries() const
 {
-	return 0;
+	return MyCurrentTries;
 }
 
-bool FBullCowGame::IsGuessValid(std::string)
+bool FBullCowGame::IsGuessValid(std::string Guess)
+{
+	
+	if (Guess.length() != MyWordLength) {
+		return false;
+	}
+	MyCurrentTries++;
+
+	return true;
+}
+
+
+bool FBullCowGame::IsGameWon() const
 {
 	return false;
 }
 
-
-
-bool FBullCowGame::IsGameWon()
+int FBullCowGame::GetWordLength() const
 {
-	return false;
+	return MyWordLength;
 }
 
-int FBullCowGame::GetWordLength()
-{
-	return 0;
-}
-
-bool FBullCowGame::bIsIsogram()
+bool FBullCowGame::bIsIsogram() const
 {
 	return false;
 }
