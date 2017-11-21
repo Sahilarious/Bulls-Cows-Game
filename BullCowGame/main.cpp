@@ -2,31 +2,30 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include "FBullCowGame.h"
 
 // std --> standard namespace
-using namespace std;
-
 
 constexpr int WORD_LENGTH = 5;
 constexpr int MAX_GUESSES = 5;
 
 void PrintIntro();
 void PlayGame();
-string GetGuess();
-bool IsValidGuess(string Guess);
+std::string GetGuess();
+bool CheckIsValidGuess(std::string Guess);
 bool AskToPlayAgain();
 
 
 int main() 
 {
-	bool PlayAgain = false;
+	bool bPlayAgain = false;
 	do 
 	{
 		PrintIntro();
 		PlayGame();
-		PlayAgain = AskToPlayAgain();
+		bPlayAgain = AskToPlayAgain();
 	} 
-	while (PlayAgain);
+	while (bPlayAgain);
 
 	return 0;
 }
@@ -38,45 +37,46 @@ void PrintIntro()
 
 	// cout --> character out
 	// << --> overloaded operator
-	cout << "Welcome to Bulls and Cows, a super cool word game." << endl;
-	cout << "Can you guess the " << WORD_LENGTH << " letter isogram I'm thinking of?" << endl;
+	std::cout << "Welcome to Bulls and Cows, a super cool word game." << std::endl;
+	std::cout << "Can you guess the " << WORD_LENGTH << " letter isogram I'm thinking of?" << std::endl;
 	return;
 }
 
 // Repeat input/output of guesses for the number of turns
 void PlayGame() 
 {
-
+	FBullCowGame BCGame = FBullCowGame();
 	for (int i = 1; i <= MAX_GUESSES; i++) {
-		bool IsValid;
+		bool bIsValid;
 
 		do {
-			string PlayerGuess = GetGuess();
-			IsValid = IsValidGuess(PlayerGuess);
-		} while (!IsValid);
+			std::string PlayerGuess = GetGuess();
+			bIsValid = CheckIsValidGuess(PlayerGuess);
+		} while (!bIsValid);
 	}
 
 	return;
 }
 
 // Take a guess from the player
-string GetGuess() 
+std::string GetGuess()
 {
-	cout << "Enter your guess: ";
-	string Guess;
-	getline(cin, Guess);
+	std::cout << "Enter your guess: ";
+	std::string Guess = "";
+	
+	getline(std::cin, Guess);
 
 	return Guess;
 }
 
 // Repeat the guess back to the user
-bool IsValidGuess(string Guess) 
+bool CheckIsValidGuess(std::string Guess)
 {
 	if (Guess.length() != WORD_LENGTH) {
-		cout << "Your guess, " << Guess <<  ", is not valid, try again." << endl;
+		std::cout << "Your guess, " << Guess <<  ", is not valid, try again." << std::endl;
 		return false;
 	}
-	cout << "Your guess is: " << Guess << endl;
+	std::cout << "Your guess is: " << Guess << std::endl;
 
 	return true;
 }
@@ -84,9 +84,9 @@ bool IsValidGuess(string Guess)
 bool AskToPlayAgain()
 {
 	while (true) {
-		cout << "Play Again? (Y/N)" << endl;
-		string ChoicePlayAgain;
-		getline(cin, ChoicePlayAgain);
+		std::cout << "Play Again? (Y/N)" << std::endl;
+		std::string ChoicePlayAgain;
+		getline(std::cin, ChoicePlayAgain);
 		ChoicePlayAgain = tolower(ChoicePlayAgain[0]);
 
 		if (ChoicePlayAgain == "y")
@@ -99,7 +99,7 @@ bool AskToPlayAgain()
 		}
 		else
 		{
-			cout << "Answer is not valid. Try again." << endl;
+			std::cout << "Answer is not valid. Try again." << std::endl;
 		}
 	}
 }
