@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BullCowGame", "BullCowGame\BullCowGame.vcxproj", "{AB5C309C-79F2-42A7-80F9-CBA86EABF2AD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BullCowGameTests", "BullCowGameTests\BullCowGameTests.vcxproj", "{1C3CCD73-398C-43E0-A7AB-9671F8B5EAED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{AB5C309C-79F2-42A7-80F9-CBA86EABF2AD}.Release|x64.Build.0 = Release|x64
 		{AB5C309C-79F2-42A7-80F9-CBA86EABF2AD}.Release|x86.ActiveCfg = Release|Win32
 		{AB5C309C-79F2-42A7-80F9-CBA86EABF2AD}.Release|x86.Build.0 = Release|Win32
+		{1C3CCD73-398C-43E0-A7AB-9671F8B5EAED}.Debug|x64.ActiveCfg = Debug|x64
+		{1C3CCD73-398C-43E0-A7AB-9671F8B5EAED}.Debug|x64.Build.0 = Debug|x64
+		{1C3CCD73-398C-43E0-A7AB-9671F8B5EAED}.Debug|x86.ActiveCfg = Debug|Win32
+		{1C3CCD73-398C-43E0-A7AB-9671F8B5EAED}.Debug|x86.Build.0 = Debug|Win32
+		{1C3CCD73-398C-43E0-A7AB-9671F8B5EAED}.Release|x64.ActiveCfg = Release|x64
+		{1C3CCD73-398C-43E0-A7AB-9671F8B5EAED}.Release|x64.Build.0 = Release|x64
+		{1C3CCD73-398C-43E0-A7AB-9671F8B5EAED}.Release|x86.ActiveCfg = Release|Win32
+		{1C3CCD73-398C-43E0-A7AB-9671F8B5EAED}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

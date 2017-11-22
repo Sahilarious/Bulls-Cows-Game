@@ -18,12 +18,13 @@ void FBullCowGame::Reset(int WordLength)
 
 	return;
 }
-
+// Getter method
 int FBullCowGame::GetMaxTries() const
 {
 	return MyMaxTries;
 }
 
+// Getter method
 int FBullCowGame::GetCurrentTries() const
 {
 	return MyCurrentTries;
@@ -40,18 +41,35 @@ bool FBullCowGame::IsGuessValid(std::string Guess)
 	return true;
 }
 
-
+// Getter method
 bool FBullCowGame::IsGameWon() const
 {
 	return false;
 }
 
+// Getter method
 int FBullCowGame::GetWordLength() const
 {
 	return MyWordLength;
 }
 
-bool FBullCowGame::bIsIsogram() const
+// Getter method
+bool FBullCowGame::bIsIsogram(std::string Guess) const
 {
-	return false;
+	int GuessLength = Guess.length();
+	for (int i = 0; i < GuessLength - 1; i++)
+	{
+		for (int j = i + 1; j < GuessLength; j++)
+		{
+			if (i != j) 
+			{
+				if (Guess[i] == Guess[j]) {
+					return false;
+				
+				}
+			}
+		}
+	}
+
+	return true;
 }

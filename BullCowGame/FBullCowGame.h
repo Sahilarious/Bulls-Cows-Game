@@ -19,7 +19,7 @@ private:
 	int MyMaxTries;
 	int MyCurrentTries = 1;
 	int MyWordLength;
-	bool bIsIsogram() const;
+	bool bIsIsogram(std::string Guess) const;
 
 
 
