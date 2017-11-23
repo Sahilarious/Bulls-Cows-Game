@@ -33,7 +33,7 @@ int FBullCowGame::GetCurrentTries() const
 bool FBullCowGame::IsGuessValid(std::string Guess)
 {
 	
-	if (Guess.length() != MyWordLength) {
+	if (Guess.length() != MyWordLength || !this->bIsIsogram(Guess)) {
 		return false;
 	}
 	MyCurrentTries++;
