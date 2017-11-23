@@ -1,17 +1,24 @@
 #include "FBullCowGame.h"
 
-FBullCowGame::FBullCowGame(int WordLength)
+using FString = std::string;
+using int32 = int;
+
+
+FBullCowGame::FBullCowGame()
 {
-	Reset(WordLength);
+	Reset();
 }
 
-void FBullCowGame::Reset(int WordLength)
+void FBullCowGame::Reset()
 {
-	constexpr int MAX_GUESSES = 8;
+	constexpr int32 MAX_GUESSES = 5;
+	MyMaxTries = MAX_GUESSES;
 
+	const FString MYSTERY_WORD = "waters";
+	MyMysteryWord = MYSTERY_WORD;
 
 	MyMaxTries = MAX_GUESSES;
-	MyWordLength = WordLength;
+
 
 
 	MyCurrentTries = 1;
@@ -19,47 +26,83 @@ void FBullCowGame::Reset(int WordLength)
 	return;
 }
 // Getter method
-int FBullCowGame::GetMaxTries() const
+int32 FBullCowGame::GetMaxTries() const
 {
 	return MyMaxTries;
 }
 
 // Getter method
-int FBullCowGame::GetCurrentTries() const
+int32 FBullCowGame::GetCurrentTries() const
 {
 	return MyCurrentTries;
 }
 
-bool FBullCowGame::IsGuessValid(std::string Guess)
+FBullCowCount FBullCowGame::SubmitGuess(FString Guess) const
 {
-	
-	if (Guess.length() != MyWordLength || !this->bIsIsogram(Guess)) {
-		return false;
+	FBullCowCount BullCowCount;
+	for (int32 i = 0; i < GetWordLength(); i++)
+	{
+		for (int32 j = 0; j < GetWordLength(); j++)
+		{
+			if (Guess[i] == MyMysteryWord[j]) 
+			{
+				if (i == j)
+				{
+					BullCowCount.Bulls++;
+				}
+				else
+				{
+					BullCowCount.Cows++;
+				}
+				j = GetWordLength() + 1;
+			}
+		}
 	}
+
+	return BullCowCount;
+}
+
+
+EWordStatus FBullCowGame::IsGuessValid(FString Guess)
+{
+	bool IsCorrectLength = Guess.length() == GetWordLength();
+	bool IsIsogram = this->bIsIsogram(Guess);
+
+	if (!IsCorrectLength) {
+		return EWordStatus::Incorrect_Length;
+	}
+	else if(!IsIsogram)
+	{
+		return EWordStatus::Not_Isogram;
+	}
+
 	MyCurrentTries++;
 
-	return true;
+	return EWordStatus::OK;
+
 }
 
 // Getter method
-bool FBullCowGame::IsGameWon() const
+bool FBullCowGame::IsGameWon(FString Guess) const
 {
-	return false;
+	bool GameWon = (MyMysteryWord == Guess);
+	return GameWon;
 }
 
 // Getter method
-int FBullCowGame::GetWordLength() const
+int32 FBullCowGame::GetWordLength() const
 {
-	return MyWordLength;
+	return MyMysteryWord.length();
 }
 
+
 // Getter method
-bool FBullCowGame::bIsIsogram(std::string Guess) const
+bool FBullCowGame::bIsIsogram(FString Guess) const
 {
-	int GuessLength = Guess.length();
-	for (int i = 0; i < GuessLength - 1; i++)
+	int32 GuessLength = Guess.length();
+	for (int32 i = 0; i < GuessLength - 1; i++)
 	{
-		for (int j = i + 1; j < GuessLength; j++)
+		for (int32 j = i + 1; j < GuessLength; j++)
 		{
 			if (i != j) 
 			{
@@ -73,3 +116,4 @@ bool FBullCowGame::bIsIsogram(std::string Guess) const
 
 	return true;
 }
+

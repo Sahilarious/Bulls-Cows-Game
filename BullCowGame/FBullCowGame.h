@@ -2,25 +2,47 @@
 #include <string>
 
 
+using FString = std::string;
+using int32 = int;
+
+struct FBullCowCount
+{
+	int32 Bulls = 0;
+	int32 Cows = 0;
+};
+
+enum class EWordStatus
+{
+	OK,
+	Not_Isogram,
+	Incorrect_Length,
+};
+
+enum class EResetStatus
+{
+	OK,
+	No_Hidden_Word
+};
+
 class FBullCowGame {
 
 public:
-	FBullCowGame(int WordLength);
+	FBullCowGame::FBullCowGame();
 
-	int GetMaxTries() const;
-	int GetCurrentTries() const;
-	bool IsGameWon() const;
-	int GetWordLength() const;
+	int32 GetMaxTries() const;
+	int32 GetCurrentTries() const;
+	bool IsGameWon(FString Guess) const;
+	int32 GetWordLength() const;
+	FBullCowCount SubmitGuess(FString Guess) const;
 
-	void Reset(int WordLength);
-	bool IsGuessValid(std::string Guess);
+	void Reset();
+	EWordStatus IsGuessValid(FString Guess);
 
 private:
-	int MyMaxTries;
-	int MyCurrentTries = 1;
-	int MyWordLength;
-	bool bIsIsogram(std::string Guess) const;
-
-
+	int32 MyMaxTries;
+	int32 MyCurrentTries = 1;
+	bool bIsIsogram(FString Guess) const;
+	
+	FString MyMysteryWord = "";
 
 };

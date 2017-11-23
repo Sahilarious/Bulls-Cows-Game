@@ -1,20 +1,27 @@
+/*
+	Console executable that serves as the interface for user interaction.
+	Equivalent to the View of the MVC design pattern.
+*/
+
+
 // libraries like iostream can contain more than one namespaces
 #include <iostream>
 #include <string>
 #include <algorithm>
 #include "FBullCowGame.h"
 
-// std --> standard namespace
+using FText = std::string;
+using int32 = int;
 
-constexpr int WORD_LENGTH = 7;
+constexpr int32 WORD_LENGTH = 5;
 
 void PrintIntro();
 void PlayGame();
-std::string GetGuess();
-bool CheckIsValidGuess(std::string Guess);
+FText GetGuess();
+void CheckIsValidGuess(FText Guess, EWordStatus GuessValid);
 bool AskToPlayAgain();
 
-FBullCowGame BCGame = FBullCowGame(WORD_LENGTH);
+FBullCowGame BCGame;
 
 
 int main() 
@@ -22,7 +29,8 @@ int main()
 	bool bPlayAgain = false;
 	do 
 	{
-		BCGame.Reset(WORD_LENGTH);
+		std::cout << std::endl;
+		BCGame.Reset();
 		PrintIntro();
 		PlayGame();
 		bPlayAgain = AskToPlayAgain();
@@ -45,30 +53,56 @@ void PrintIntro()
 // Repeat input/output of guesses for the number of turns
 void PlayGame() 
 {
-	int MaxGuesses = BCGame.GetMaxTries();
-	std::cout << MaxGuesses << std::endl;
+	int32 MaxGuesses = BCGame.GetMaxTries();
 
-	for (int i = 1; i <= MaxGuesses; i++) {
-		bool bIsValid;
+	bool GameWon = false;
+
+	//for (int32 i = 1; i <= MaxGuesses; i++) {
+	while(BCGame.GetCurrentTries() <= MaxGuesses && !GameWon)
+	{ 
+		std::cout << std::endl;
+		
+		EWordStatus IsValid;
 
 		do {
-			std::string PlayerGuess = GetGuess();
-			bIsValid = BCGame.IsGuessValid(PlayerGuess);
+			FText PlayerGuess = GetGuess();
+			IsValid = BCGame.IsGuessValid(PlayerGuess);
+
+			CheckIsValidGuess(PlayerGuess, IsValid);
 
 			//if guess is valid, print number of bulls and cows 
+			if (IsValid == EWordStatus::OK)
+			{
+				FBullCowCount Results = BCGame.SubmitGuess(PlayerGuess);
+				std::cout << "Bulls: " << Results.Bulls << std::endl;
+				std::cout << "Cows: " << Results.Cows << std::endl;
 
-		} while (!bIsValid);
+				GameWon = BCGame.IsGameWon(PlayerGuess);
+			}
+
+			
+		} while (IsValid != EWordStatus::OK);
+		
+
+	}
+
+	if (GameWon) {
+		std::cout << "\nYou win!!!!" << std::endl;
+	}
+	else 
+	{
+		std::cout << "\nYou lose." << std::endl;
 	}
 
 	return;
 }
 
 // Take a guess from the player
-std::string GetGuess()
+FText GetGuess()
 {
-	int CurrentGuess = BCGame.GetCurrentTries();
+	int32 CurrentGuess = BCGame.GetCurrentTries();
 	std::cout << "Enter guess " << CurrentGuess << ": ";
-	std::string Guess = "";
+	FText Guess = "";
 	
 	getline(std::cin, Guess);
 
@@ -76,23 +110,27 @@ std::string GetGuess()
 }
 
 // Repeat the guess back to the user
-bool CheckIsValidGuess(std::string Guess)
+void CheckIsValidGuess(FText Guess, EWordStatus GuessValid)
 {
-	bool IsGuessValid = BCGame.IsGuessValid(Guess);
-	if (!IsGuessValid) {
-		std::cout << "Your guess, " << Guess <<  ", is not valid, try again." << std::endl;
-		return false;
-	}
-	std::cout << "Your guess is: " << Guess << std::endl;
 
-	return true;
+	switch (GuessValid) {
+	case EWordStatus::Incorrect_Length:
+		std::cout << "Error: Guess entered" << Guess << ", is of incorrect length." << std::endl;
+		break;
+	case EWordStatus::Not_Isogram:
+		std::cout << "Error: Guess entered," << Guess << ", is not an isogram." << std::endl;
+		break;
+	}
+
+
+	return;
 }
 
 bool AskToPlayAgain()
 {
 	while (true) {
 		std::cout << "Play Again? (Y/N)" << std::endl;
-		std::string ChoicePlayAgain;
+		FText ChoicePlayAgain;
 		getline(std::cin, ChoicePlayAgain);
 		ChoicePlayAgain = tolower(ChoicePlayAgain[0]);
 
