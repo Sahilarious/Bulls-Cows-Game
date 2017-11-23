@@ -1,3 +1,4 @@
-﻿  unittest1.cpp
-c:\repos\bulls-cows-game\bullcowgametests\unittest1.cpp(27): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+﻿  BullCowsGameTestMethods.cpp
+c:\repos\bulls-cows-game\bullcowgametests\bullcowsgametestmethods.cpp(27): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+     Creating library C:\Repos\Bulls-Cows-Game\x64\Debug\BullCowGameTests.lib and object C:\Repos\Bulls-Cows-Game\x64\Debug\BullCowGameTests.exp
   BullCowGameTests.vcxproj -> C:\Repos\Bulls-Cows-Game\x64\Debug\BullCowGameTests.dll
