@@ -14,8 +14,8 @@ void FBullCowGame::Reset()
 	constexpr int32 MAX_GUESSES = 5;
 	MyMaxTries = MAX_GUESSES;
 
-	const FString MYSTERY_WORD = "waters";
-	MyMysteryWord = MYSTERY_WORD;
+	const FString MYSTERY_WORD = "AIR";
+	MyMysteryWord = ToLowerCase(MYSTERY_WORD);
 
 	MyMaxTries = MAX_GUESSES;
 
@@ -39,6 +39,7 @@ int32 FBullCowGame::GetCurrentTries() const
 
 FBullCowCount FBullCowGame::SubmitGuess(FString Guess) const
 {
+	Guess = ToLowerCase(Guess);
 	FBullCowCount BullCowCount;
 	for (int32 i = 0; i < GetWordLength(); i++)
 	{
@@ -63,22 +64,35 @@ FBullCowCount FBullCowGame::SubmitGuess(FString Guess) const
 }
 
 
-EWordStatus FBullCowGame::IsGuessValid(FString Guess)
+std::list<EWordStatus> FBullCowGame::IsGuessValid(FString Guess)
 {
 	bool IsCorrectLength = Guess.length() == GetWordLength();
 	bool IsIsogram = this->bIsIsogram(Guess);
+	bool IsAlphabetical = CheckIfAlphabetical(Guess);
+
+	std::list<EWordStatus> ErrorList;
 
 	if (!IsCorrectLength) {
-		return EWordStatus::Incorrect_Length;
+		ErrorList.push_back(EWordStatus::Incorrect_Length);
 	}
-	else if(!IsIsogram)
+	
+	if(!IsIsogram)
 	{
-		return EWordStatus::Not_Isogram;
+		ErrorList.push_back(EWordStatus::Guess_Not_Isogram);
 	}
 
-	MyCurrentTries++;
+	if (!IsAlphabetical) {
+		ErrorList.push_back(EWordStatus::Non_Letter_Chars);
+	}
 
-	return EWordStatus::OK;
+
+	if (ErrorList.size() == 0) {
+		MyCurrentTries++;
+		ErrorList.push_back(EWordStatus::OK);
+	}
+
+	return ErrorList;
+
 
 }
 
@@ -116,4 +130,29 @@ bool FBullCowGame::bIsIsogram(FString Guess) const
 
 	return true;
 }
+
+FString FBullCowGame::ToLowerCase(FString Guess) const
+{
+	FString LCString = "";
+
+	for (int i = 0; i < Guess.length(); i++) 
+	{
+		LCString = LCString + (char)tolower(Guess[i]);
+	}
+
+	return LCString;
+}
+
+
+bool FBullCowGame::CheckIfAlphabetical(FString Guess) const
+{
+	for (char MyChar : Guess) {
+		if (!isalpha(MyChar)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+
 

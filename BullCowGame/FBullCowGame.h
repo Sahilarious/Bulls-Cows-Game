@@ -1,5 +1,8 @@
 #pragma once
 #include <string>
+#include <list>
+
+
 
 
 using FString = std::string;
@@ -14,14 +17,10 @@ struct FBullCowCount
 enum class EWordStatus
 {
 	OK,
-	Not_Isogram,
+	Guess_Not_Isogram, 
 	Incorrect_Length,
-};
+	Non_Letter_Chars
 
-enum class EResetStatus
-{
-	OK,
-	No_Hidden_Word
 };
 
 class FBullCowGame {
@@ -36,7 +35,7 @@ public:
 	FBullCowCount SubmitGuess(FString Guess) const;
 
 	void Reset();
-	EWordStatus IsGuessValid(FString Guess);
+	std::list<EWordStatus> IsGuessValid(FString Guess);
 
 private:
 	int32 MyMaxTries;
@@ -45,4 +44,6 @@ private:
 	
 	FString MyMysteryWord = "";
 
+	FString ToLowerCase(FString Guess) const;
+	bool CheckIfAlphabetical(FString Guess) const;
 };

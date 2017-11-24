@@ -18,7 +18,7 @@ constexpr int32 WORD_LENGTH = 5;
 void PrintIntro();
 void PlayGame();
 FText GetGuess();
-void CheckIsValidGuess(FText Guess, EWordStatus GuessValid);
+void ErrorGuess(FText Guess, std::list<EWordStatus> GuessValidList);
 bool AskToPlayAgain();
 
 FBullCowGame BCGame;
@@ -62,16 +62,17 @@ void PlayGame()
 	{ 
 		std::cout << std::endl;
 		
-		EWordStatus IsValid;
+		std::list<EWordStatus> IsValid;
 
 		do {
-			FText PlayerGuess = GetGuess();
-			IsValid = BCGame.IsGuessValid(PlayerGuess);
 
-			CheckIsValidGuess(PlayerGuess, IsValid);
+			FText PlayerGuess = GetGuess();
+
+			IsValid = BCGame.IsGuessValid(PlayerGuess);
+			
 
 			//if guess is valid, print number of bulls and cows 
-			if (IsValid == EWordStatus::OK)
+			if (IsValid.front() == EWordStatus::OK)
 			{
 				FBullCowCount Results = BCGame.SubmitGuess(PlayerGuess);
 				std::cout << "Bulls: " << Results.Bulls << std::endl;
@@ -79,9 +80,12 @@ void PlayGame()
 
 				GameWon = BCGame.IsGameWon(PlayerGuess);
 			}
+			else {
+				ErrorGuess(PlayerGuess, IsValid);
+			}
 
 			
-		} while (IsValid != EWordStatus::OK);
+		} while (IsValid.front() != EWordStatus::OK);
 		
 
 	}
@@ -110,18 +114,21 @@ FText GetGuess()
 }
 
 // Repeat the guess back to the user
-void CheckIsValidGuess(FText Guess, EWordStatus GuessValid)
+void ErrorGuess(FText Guess, std::list<EWordStatus> GuessValidList)
 {
-
-	switch (GuessValid) {
-	case EWordStatus::Incorrect_Length:
-		std::cout << "Error: Guess entered" << Guess << ", is of incorrect length." << std::endl;
-		break;
-	case EWordStatus::Not_Isogram:
-		std::cout << "Error: Guess entered," << Guess << ", is not an isogram." << std::endl;
-		break;
+	for (EWordStatus error : GuessValidList) {
+		switch (error) {
+		case EWordStatus::Incorrect_Length:
+			std::cout << "Error: Guess entered, " << Guess << ", is of incorrect length." << std::endl;
+			break;
+		case EWordStatus::Guess_Not_Isogram:
+			std::cout << "Error: Guess entered, " << Guess << ", is not an isogram." << std::endl;
+			break;
+		case EWordStatus::Non_Letter_Chars:
+			std::cout << "Error: Guess entered, " << Guess << ", must contain alphabetical characters only." << std::endl;
+			break;
+		}
 	}
-
 
 	return;
 }
