@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 #include <list>
-
+#include <algorithm>
+#include <map>
+#define TMAP std::map
 
 
 
@@ -30,9 +32,9 @@ public:
 
 	int32 GetMaxTries() const;
 	int32 GetCurrentTries() const;
-	bool IsGameWon(FString Guess) const;
-	int32 GetWordLength() const;
-	FBullCowCount SubmitGuess(FString Guess) const;
+	bool IsGameWon() const;
+	int32 GetMysteryWordLength() const;
+	FBullCowCount SubmitValidGuess(FString Guess);
 
 	void Reset();
 	std::list<EWordStatus> IsGuessValid(FString Guess);
@@ -40,10 +42,11 @@ public:
 private:
 	int32 MyMaxTries;
 	int32 MyCurrentTries = 1;
-	bool bIsIsogram(FString Guess) const;
-	
 	FString MyMysteryWord = "";
+	bool bGameWon = false;
 
-	FString ToLowerCase(FString Guess) const;
+	bool bIsIsogram(FString Guess) const;
 	bool CheckIfAlphabetical(FString Guess) const;
+	FString ToLowerCase(FString Guess) const;
+
 };

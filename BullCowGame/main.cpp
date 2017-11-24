@@ -7,7 +7,6 @@
 // libraries like iostream can contain more than one namespaces
 #include <iostream>
 #include <string>
-#include <algorithm>
 #include "FBullCowGame.h"
 
 using FText = std::string;
@@ -19,6 +18,7 @@ void PrintIntro();
 void PlayGame();
 FText GetGuess();
 void ErrorGuess(FText Guess, std::list<EWordStatus> GuessValidList);
+void PrintGameEnding();
 bool AskToPlayAgain();
 
 FBullCowGame BCGame;
@@ -33,6 +33,7 @@ int main()
 		BCGame.Reset();
 		PrintIntro();
 		PlayGame();
+		PrintGameEnding();
 		bPlayAgain = AskToPlayAgain();
 	} 
 	while (bPlayAgain);
@@ -46,7 +47,7 @@ void PrintIntro()
 	// cout --> character out
 	// << --> overloaded operator
 	std::cout << "Welcome to Bulls and Cows, a super cool word game." << std::endl;
-	std::cout << "Can you guess the " << BCGame.GetWordLength() << " letter isogram I'm thinking of?" << std::endl;
+	std::cout << "Can you guess the " << BCGame.GetMysteryWordLength() << " letter isogram I'm thinking of?" << std::endl;
 	return;
 }
 
@@ -55,47 +56,35 @@ void PlayGame()
 {
 	int32 MaxGuesses = BCGame.GetMaxTries();
 
-	bool GameWon = false;
+
 
 	//for (int32 i = 1; i <= MaxGuesses; i++) {
-	while(BCGame.GetCurrentTries() <= MaxGuesses && !GameWon)
+	while(BCGame.GetCurrentTries() <= MaxGuesses && !BCGame.IsGameWon())
 	{ 
 		std::cout << std::endl;
 		
-		std::list<EWordStatus> IsValid;
+		std::list<EWordStatus> IsValidList;
 
 		do {
-
 			FText PlayerGuess = GetGuess();
 
-			IsValid = BCGame.IsGuessValid(PlayerGuess);
+			IsValidList = BCGame.IsGuessValid(PlayerGuess);
 			
 
 			//if guess is valid, print number of bulls and cows 
-			if (IsValid.front() == EWordStatus::OK)
+			if (IsValidList.front() == EWordStatus::OK)
 			{
-				FBullCowCount Results = BCGame.SubmitGuess(PlayerGuess);
+				FBullCowCount Results = BCGame.SubmitValidGuess(PlayerGuess);
 				std::cout << "Bulls: " << Results.Bulls << std::endl;
 				std::cout << "Cows: " << Results.Cows << std::endl;
 
-				GameWon = BCGame.IsGameWon(PlayerGuess);
 			}
 			else {
-				ErrorGuess(PlayerGuess, IsValid);
+				ErrorGuess(PlayerGuess, IsValidList);
 			}
 
-			
-		} while (IsValid.front() != EWordStatus::OK);
-		
+		} while (IsValidList.front() != EWordStatus::OK);
 
-	}
-
-	if (GameWon) {
-		std::cout << "\nYou win!!!!" << std::endl;
-	}
-	else 
-	{
-		std::cout << "\nYou lose." << std::endl;
 	}
 
 	return;
@@ -127,11 +116,25 @@ void ErrorGuess(FText Guess, std::list<EWordStatus> GuessValidList)
 		case EWordStatus::Non_Letter_Chars:
 			std::cout << "Error: Guess entered, " << Guess << ", must contain alphabetical characters only." << std::endl;
 			break;
+		default:
+			break;
 		}
 	}
 
 	return;
 }
+
+void PrintGameEnding() {
+	if (BCGame.IsGameWon()) {
+		std::cout << "\nYou win!!!!" << std::endl;
+	}
+	else
+	{
+		std::cout << "\nYou lose." << std::endl;
+	}
+}
+
+
 
 bool AskToPlayAgain()
 {

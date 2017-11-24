@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "..\BullCowGame\FBullCowGame.h"
+#include <list>
 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -14,19 +15,22 @@ namespace BullCowGameTests
 	{
 
 	public:
-		FBullCowGame BCGame = FBullCowGame(5);
+		FBullCowGame BCGame = FBullCowGame();
 		
 		
 		TEST_METHOD(IsGuessValid)
 		{
-			std::string Guess = "blues";
+			std::string Guess = "blu";
 			
-			bool result = BCGame.IsGuessValid(Guess);
+			std::list<EWordStatus> Result = BCGame.IsGuessValid(Guess);
 			
-			bool expectedResult = true;
+			EWordStatus ExpectedResult = EWordStatus::OK;
 
+			bool bExpectedResult = ExpectedResult == EWordStatus::OK;
 
-			Assert::AreEqual(expectedResult, result, L"message", LINE_INFO());
+			bool bResult = Result.front() == EWordStatus::OK;
+
+			Assert::AreEqual(bExpectedResult, bResult, L"message", LINE_INFO());
 		}
 
 	};

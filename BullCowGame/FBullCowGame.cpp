@@ -17,6 +17,8 @@ void FBullCowGame::Reset()
 	const FString MYSTERY_WORD = "AIR";
 	MyMysteryWord = ToLowerCase(MYSTERY_WORD);
 
+	bGameWon = false;
+
 	MyMaxTries = MAX_GUESSES;
 
 
@@ -37,27 +39,36 @@ int32 FBullCowGame::GetCurrentTries() const
 	return MyCurrentTries;
 }
 
-FBullCowCount FBullCowGame::SubmitGuess(FString Guess) const
+FBullCowCount FBullCowGame::SubmitValidGuess(FString Guess)
 {
 	Guess = ToLowerCase(Guess);
 	FBullCowCount BullCowCount;
-	for (int32 i = 0; i < GetWordLength(); i++)
-	{
-		for (int32 j = 0; j < GetWordLength(); j++)
+	int32 WordLength = GetMysteryWordLength();
+
+	if (Guess.length() == WordLength) {
+
+		for (int32 i = 0; i < WordLength; i++)
 		{
-			if (Guess[i] == MyMysteryWord[j]) 
+			for (int32 j = 0; j < WordLength; j++)
 			{
-				if (i == j)
+				if (Guess[i] == MyMysteryWord[j])
 				{
-					BullCowCount.Bulls++;
+					if (i == j)
+					{
+						BullCowCount.Bulls++;
+					}
+					else
+					{
+						BullCowCount.Cows++;
+					}
+					j = WordLength + 1;
 				}
-				else
-				{
-					BullCowCount.Cows++;
-				}
-				j = GetWordLength() + 1;
 			}
 		}
+	}
+
+	if (BullCowCount.Bulls == WordLength) {
+		bGameWon = true;
 	}
 
 	return BullCowCount;
@@ -66,8 +77,8 @@ FBullCowCount FBullCowGame::SubmitGuess(FString Guess) const
 
 std::list<EWordStatus> FBullCowGame::IsGuessValid(FString Guess)
 {
-	bool IsCorrectLength = Guess.length() == GetWordLength();
-	bool IsIsogram = this->bIsIsogram(Guess);
+	bool IsCorrectLength = Guess.length() == GetMysteryWordLength();
+	bool IsIsogram = bIsIsogram(Guess);
 	bool IsAlphabetical = CheckIfAlphabetical(Guess);
 
 	std::list<EWordStatus> ErrorList;
@@ -85,26 +96,22 @@ std::list<EWordStatus> FBullCowGame::IsGuessValid(FString Guess)
 		ErrorList.push_back(EWordStatus::Non_Letter_Chars);
 	}
 
-
 	if (ErrorList.size() == 0) {
 		MyCurrentTries++;
 		ErrorList.push_back(EWordStatus::OK);
 	}
 
 	return ErrorList;
-
-
 }
 
 // Getter method
-bool FBullCowGame::IsGameWon(FString Guess) const
+bool FBullCowGame::IsGameWon() const
 {
-	bool GameWon = (MyMysteryWord == Guess);
-	return GameWon;
+	return bGameWon;
 }
 
 // Getter method
-int32 FBullCowGame::GetWordLength() const
+int32 FBullCowGame::GetMysteryWordLength() const
 {
 	return MyMysteryWord.length();
 }
@@ -114,20 +121,22 @@ int32 FBullCowGame::GetWordLength() const
 bool FBullCowGame::bIsIsogram(FString Guess) const
 {
 	int32 GuessLength = Guess.length();
-	for (int32 i = 0; i < GuessLength - 1; i++)
-	{
-		for (int32 j = i + 1; j < GuessLength; j++)
+
+	if (GuessLength > 1) 
+{
+		Guess = ToLowerCase(Guess);
+
+		TMAP<char, bool> LettersInGuess;
+
+		for (auto Letter : Guess)
 		{
-			if (i != j) 
+			if (LettersInGuess[Letter])
 			{
-				if (Guess[i] == Guess[j]) {
-					return false;
-				
-				}
+				return false;
 			}
+			LettersInGuess[Letter] = true;
 		}
 	}
-
 	return true;
 }
 
@@ -135,9 +144,9 @@ FString FBullCowGame::ToLowerCase(FString Guess) const
 {
 	FString LCString = "";
 
-	for (int i = 0; i < Guess.length(); i++) 
+	for (auto Letter : Guess) 
 	{
-		LCString = LCString + (char)tolower(Guess[i]);
+		LCString = LCString + (char)tolower(Letter);
 	}
 
 	return LCString;
